@@ -5,6 +5,8 @@ Creating a micro-service authenticator with node, tsc and express using the meth
  - POST /users
  - PUT /users/:uuid
  - DELETE /users/:uuid
+ - POST /token
+ - POST /token//validate
 
 ## building the project with node and tsc
  
@@ -46,5 +48,10 @@ Creating a micro-service authenticator with node, tsc and express using the meth
     $ npm install --save pg
     $ npm install --save-dev @types/pg
     > Access elephantSQL or ur postgres to setup your instance
+
+## installing JWT to generate tokens
+    
+    $ npm install --save jsonwebtoken
+    $ npm install --save-dev @types/jsonwebtoken
 
 
