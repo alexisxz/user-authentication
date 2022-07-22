@@ -1,9 +1,6 @@
-import db from "../db";
-import DatabaseError from "../models/errors/database.error.model";
-import User from "../models/user_model";
-
-
-
+import db from '../db';
+import DatabaseError from '../models/errors/database.error.model';
+import User from '../models/user.model';
 
 class UserRepository {
 
@@ -20,16 +17,17 @@ class UserRepository {
     async findById(uuid: string): Promise<User> {
         try {
             const query = `
-            SELECT uuid, username
-            FROM application_user
-            WHERE uuid = $1
+                SELECT uuid, username
+                FROM application_user
+                WHERE uuid = $1
             `;
 
             const values = [uuid];
+
             const { rows } = await db.query<User>(query, values);
             const [user] = rows;
-            return user;
 
+            return user;
         } catch (error) {
             throw new DatabaseError('Erro na consulta por ID', error);
         }
@@ -38,17 +36,17 @@ class UserRepository {
     async findByUsernameAndPassword(username: string, password: string): Promise<User | null> {
         try {
             const query = `
-            SELECT uuid, username
-            FROM application_user
-            WHERE username = $1
-            AND password = crypt($2, 'my_salt')
-        `;
-            const values = [username, password]
+                SELECT uuid, username
+                FROM application_user
+                WHERE username = $1
+                AND password = crypt($2, 'my_salt')
+            `;
+            const values = [username, password];
             const { rows } = await db.query<User>(query, values);
             const [user] = rows;
             return user || null;
         } catch (error) {
-            throw new DatabaseError('Error by username and password', error);
+            throw new DatabaseError('Erro na consulta por username e password', error);
         }
     }
 
@@ -59,10 +57,11 @@ class UserRepository {
                 password
             )
             VALUES ($1, crypt($2, 'my_salt'))
-            RETURNING  uuid
+            RETURNING uuid
         `;
 
         const values = [user.username, user.password];
+
         const { rows } = await db.query<{ uuid: string }>(script, values);
         const [newUser] = rows;
         return newUser.uuid;
@@ -70,8 +69,8 @@ class UserRepository {
 
     async update(user: User): Promise<void> {
         const script = `
-            UPDATE application_user
-            SET
+            UPDATE application_user 
+            SET 
                 username = $1,
                 password = crypt($2, 'my_salt')
             WHERE uuid = $3
@@ -79,18 +78,18 @@ class UserRepository {
 
         const values = [user.username, user.password, user.uuid];
         await db.query(script, values);
-
     }
 
     async remove(uuid: string): Promise<void> {
-        const script = `
+        const cript = `
             DELETE
             FROM application_user
             WHERE uuid = $1
         `;
         const values = [uuid];
-        await db.query(script, values);
+        await db.query(cript, values);
     }
+
 }
 
 export default new UserRepository();
