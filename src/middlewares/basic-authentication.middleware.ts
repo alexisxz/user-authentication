@@ -13,7 +13,7 @@ async function basicAuthenticationMiddleware(req: Request, res: Response, next: 
 
         const [authenticationType, token] = authorizationHeader.split(' ');
 
-        if (authenticationType !== 'Basic' || token) {
+        if (authenticationType !== 'Basic' || !token) {
             throw new ForbiddenError('Authentication type invalid');
         }
 
